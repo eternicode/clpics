@@ -745,7 +745,7 @@ ListingProcessor.prototype = {
             if (images.indexOf(url) === -1)
                 images.push(url);
         });
-        return images.slice(0, prefs.image_limit);
+        return images.slice(0, prefs.image_limit || images.length);
     },
     add_text_preview: function(page) {
         var content = page.find('#postingbody').html();
