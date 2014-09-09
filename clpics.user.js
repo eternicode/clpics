@@ -40,6 +40,45 @@ var images = {
                 bestof: "<a href='{link}' title='Should be considered for inclusion in the Best-Of-Craigslist'>best of craigslist</a>",
                 thanks: "Thanks for flagging.",
             },
+            prefspane: {
+                link: "clpics",
+                title: "CLPics Preferences",
+                enable: "Enable",
+
+                imagepreview: "Show Image Previews",
+                resizeimages: "Resize Images",
+                    resizeby: "Resize by:",
+                    percscale: "% Scale",
+                        percscaletooltip: "Images will be scaled down to a percentage of their original size.",
+                        imagescale: "Image Scale",
+                    maxheight: "Max Height",
+                        maxheighttooltip: "Images will be scaled down to be shorter than the given height.",
+                    maxwidth: "Max Width",
+                        maxwidthtooltip: "Images will be scaled down to be thinner than the given width.",
+                fullsizeonhover: "Fullsize on hover",
+                after: "after",
+
+                otherimagesettings: "Other Image Settings",
+                    limitimages: "Limit # images (0 for unlimited)",
+                        limitimagestooltip: "Limits the number of images displayed for each listing; eg, when set to 2, each listing may show a maximum of 2 images, even if it has 4.",
+                    domainlimit: "Show only craigslist.org images",
+                        domainlimittooltip: "Don't display images hosted on external sites (for example, those used in many car sales listings).",
+
+                textpreview: "Show Text Previews",
+                    restrictpreviewheight: "Restrict preview height",
+                        previewheight: "Max Preview Height",
+
+                load: "Loading method",
+                    loadallatonce: "All at once",
+                        loadallatoncetooltip: "Load all previews on page load -- heavier on bandwidth",
+                    loadonview: "When visible",
+                        loadonviewtooltip: "Load preview when ad is scrolled to -- lighter on bandwidth",
+                    loadselective: "Selectively",
+                        loadselectivetooltip: "Load preview when download indicator is clicked -- REALLY light on bandwidth",
+
+                willtakeeffect: "Changes will take effect next time you load a listings page",
+                clear: "&times; Reset settings",
+            },
         },
     };
 
@@ -61,16 +100,21 @@ function interpolate(string) {
     return string;
 }
 
-function locale(key){
-    var lang = window.navigator.language,
-        args = arguments,
-        str;
+function get_locale(){
+    var lang = window.navigator.language;
 
     if (!(lang in locales))
         lang = 'en-US';
 
+    return locales[lang];
+}
+
+function locale(key){
+    var args = arguments,
+        str;
+
     key = key.split('.');
-    str = locales[lang];
+    str = get_locale();
     for (var i=0; i<key.length; i++)
         str = str[key[i]];
     args[0] = String(str);
@@ -78,6 +122,176 @@ function locale(key){
     return interpolate.apply(this, args);
 }
 
+
+// Yes, it's ugly.  But it's the prettiest multiline strings we get.
+var prefs_panel = function() {/*
+
+<blockquote class="searchform" id="clpprefs">
+    <style>
+        #clpprefs .loadmethod {
+            float: right;
+        }
+        #clpprefs label {
+            font-size: .8em;
+            vertical-align: middle;
+        }
+        #clpprefs fieldset {
+            vertical-align: top;
+            border: #ccc solid 1px;
+        }
+        #clpprefs legend {
+            background: #eee;
+            border: #ccc solid;
+            border-width: 1px 1px 0 1px;
+            padding: 1px 4px;
+        }
+        #clpprefs legend label {
+            font-size: 1em;
+        }
+        #clpprefs .cont {
+            display: inline-block;
+            width: 30%;
+            margin-top: 1em;
+        }
+        #clpprefs small {
+            font-size: .6em;
+        }
+        #clpprefs button {
+            float: right;
+        }
+    </style>
+    <form>
+        <fieldset>
+            <legend>
+                {title}
+            </legend>
+
+            <div class="loadmethod">
+                <label>{load}:</label>
+                <label title="{loadallatoncetooltip}">
+                    <input type="radio" name="load_when" value="allatonce">
+                    {loadallatonce}
+                </label>
+                <label title="{loadonviewtooltip}">
+                    <input type="radio" name="load_when" value="onview">
+                    {loadonview}
+                </label>
+                <label title="{loadselectivetooltip}">
+                    <input type="radio" name="load_when" value="selective">
+                    {loadselective}
+                </label>
+            </div>
+            <div>
+                <label><input type="checkbox" name="enable"> {enable}</label>
+                <label><input type="checkbox" name="image_preview"> {imagepreview}</label>
+            </div>
+
+            <fieldset class="cont resize-options">
+                <legend>
+                    <label>
+                        <input type="checkbox" name="resize_images">
+                        {resizeimages}
+                    </label>
+                </legend>
+                <label>{resizeby}</label><br>
+                <label title="{percscaletooltip}">
+                    <input type="radio" name="resize_method" value="image_scale">
+                    {percscale}
+                </label>
+                <label title="{maxheighttooltip}">
+                    <input type="radio" name="resize_method" value="image_maxheight">
+                    {maxheight}
+                </label>
+                <label title="{maxwidthtooltip}">
+                    <input type="radio" name="resize_method" value="image_maxwidth">
+                    {maxwidth}
+                </label>
+
+                <div id="image_scale-options">
+                    <label>
+                        {imagescale}
+                        <input name="image_scale"
+                                min="1"
+                                max="100"
+                                type="number"
+                                increment="1">
+                        %
+                    </label>
+                </div>
+                <div id="image_maxheight-options">
+                    <label>
+                        {maxheight}
+                        <input name="image_maxheight"
+                                min="1"
+                                max="10000"
+                                type="number"
+                                step="1">
+                        px
+                    </label>
+                </div>
+                <div id="image_maxwidth-options">
+                    <label>
+                        {maxwidth}
+                        <input name="image_maxwidth"
+                                min="1"
+                                max="10000"
+                                type="number"
+                                step="1">
+                        px
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" name="hover_zoom">
+                        {fullsizeonhover}
+                        {after}
+                        <input name="hover_zoom_timeout"
+                                    min="0"
+                                    max="5"
+                                    type="number"
+                                    step=".25" />
+                        sec
+                    </label>
+                </div>
+            </fieldset>
+            <fieldset class="cont image-options">
+                <legend>{otherimagesettings}</legend>
+                <label title="{limitimagestooltip}">
+                    {limitimages}
+                    <input name="image_limit" type="number" min="0", max="100">
+                </label>
+                <br>
+                <label title="{domainlimittooltip}">
+                    <input type="checkbox" name="image_domain">
+                    {domainlimit}
+                </label>
+            </fieldset>
+            <fieldset class="cont text-options">
+                <legend>
+                    <label>
+                        <input type="checkbox" name="text_preview">
+                        {textpreview}
+                    </label>
+                </legend>
+                <label>
+                    <input type="checkbox" name="restrict_preview">
+                    {restrictpreviewheight}
+                </label>
+                <br>
+                <label>
+                    {previewheight}
+                    <input name="preview_height"
+                                type="number" min="0" max="1024" />
+                    px
+                </label>
+            </fieldset>
+            <small>{willtakeeffect}</small>
+            <button class="clear">{clear}</button>
+        </fieldset>
+    </form>
+</blockquote>
+
+*/}.toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
 
 var prefs = {
     defaults: {
@@ -96,6 +310,122 @@ var prefs = {
         restrict_preview: false,
         preview_height: 300,
         load_when: "allatonce",
+    },
+    init: function() {
+        this.load();
+        this.setup_panel();
+    },
+    setup_panel: function() {
+        var pane = prefs.pane = $($.trim(interpolate(prefs_panel, get_locale().prefspane)))
+            .insertAfter('header.bchead')
+            .slideUp(0);
+
+        $(
+            '<li class="user clpics"><em>[ </em><a href="#">' +
+            locale('prefspane.link') +
+             '</a><em> ]</em></li>'
+        )
+            .insertAfter('header .userlinks .user.account')
+            .click(function() {
+                pane.slideToggle('slow');
+                return false;
+            });
+
+        // Populate fields
+        prefs.populate_fields();
+
+        // Setup events
+        pane.change(function(e) {
+            var key = e.target.name,
+                def = prefs.defaults[key],
+                val = e.target.value;
+            switch (typeof def) {
+                case 'string':
+                    break;
+                case 'boolean':
+                    val = e.target.checked;
+                    break;
+                case 'number':
+                    val = parseFloat(val);
+                    break;
+            }
+            prefs.set(key, val);
+        });
+
+        function _(name){
+            var result = pane.find('[name=' + name + ']');
+            if (result.length > 1)
+                result = result.filter(':checked');
+            return result;
+        }
+
+        function toggle_resize_options(enabled) {
+            if (enabled) {
+                _('resize_method').val(_('resize_method').val());
+            }
+            pane.find('.resize-options').find('input:not(legend input), label').prop({disabled: !enabled});
+
+            // h-z-t's disabled state depends secondarily on h-z's checked state
+            if (enabled)
+                _('hover_zoom_timeout').prop({disabled: !_('hover_zoom')[0].checked});
+        }
+
+        pane.find('[name=text_preview]').change(function() {
+            pane.find('.text-options').find('input, label').prop({disabled: !this.checked});
+        }).change();
+
+        pane.find('[name=image_preview]').change(function() {
+            var disabled = !this.checked;
+            if (!disabled)
+                toggle_resize_options(_('resize_images')[0].checked);
+            else
+                toggle_resize_options(false); // false = disabled
+            _('resize_images').prop({disabled: disabled});
+
+            pane.find('.image-options').find('input, label').prop({disabled: disabled});
+        }).change();
+
+        pane.find('[name=resize_images]').change(function() {
+            if (_('image_preview')[0].checked)
+                toggle_resize_options(this.checked);
+        }).change();
+
+        pane.find('[name=resize_method]').change(function(e) {
+            var blocks = {
+                'image_scale': pane.find('#image_scale-options'),
+                'image_maxheight': pane.find('#image_maxheight-options'),
+                'image_maxwidth': pane.find('#image_maxwidth-options'),
+            };
+            for (var ix in blocks)
+                blocks[ix].hide();
+            blocks[e.target.value].show();
+        }).filter(':checked').change();
+
+        _("hover_zoom").change(function() {
+            _("hover_zoom_timeout")[0].disabled = !this.checked;
+        }).change();
+
+        pane.find('button.clear').click(function() {
+            prefs.clear();
+            prefs.populate_fields();
+            return false;
+        });
+    },
+    populate_fields: function() {
+        $.each(this.defaults, function(key, def) {
+            var val = prefs[key];
+            switch (typeof def) {
+                case 'string': // Radio buttons
+                    prefs.pane.find('[name=' + key + '][value=' + val + ']').prop({checked: true}).change();
+                    break;
+                case 'boolean': // Checkboxes
+                    prefs.pane.find('[name=' + key + ']').prop({checked: val}).change();
+                    break;
+                default: // Numbers, mainly
+                    prefs.pane.find('[name=' + key + ']').val(val).change();
+                    break;
+            }
+        });
     },
     load: function() {
         $.each(this.defaults, function(key, val) {
@@ -519,7 +849,7 @@ var clpics = {
     }
 };
 
-prefs.load();
+prefs.init();
 if (clpics.should_run())
     clpics.init();
 
