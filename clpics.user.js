@@ -14,6 +14,7 @@
 // @exclude     https://*.craigslist.org/static/localstorage.html*
 // @exclude     http://*.craigslist.ca/static/localstorage.html*
 // @require     https://www.craigslist.org/js/general-concat.min.js?v=8a1701132ee120b06085b460053658a6
+// @require     https://www.craigslist.org/js/leaflet-concat.min.js?v=1218ae639adbe8ffc16f31004007113d
 
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -27,6 +28,9 @@ var images = {
         flagged: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAFcp1ZSAAAAAXNSR0IArs4c6QAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAxQTFRF1JI33iIi/ycn////9M3WqQAAAFRJREFUCFtj+MPwhuEPwweGBUD8/ADDfyBi0GfQZrAHwv9A3qnsAwznZwMxSAaKT4FwPgSfB8n/R+D/QPABSn5YFQ8mo/aDyGnrgeT/a2ASLItQCQD9hFHkkbViJQAAAABJRU5ErkJggg==',
         load_ad: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAIAAAGuqymWAAAAAXNSR0IArs4c6QAAAAlwSFlzAAAOxAAADsQBlSsOGwAAASJJREFUKM+tkr1xwlAQhL/VENAADVANLkAUQEhCKAeEJIQKzAwOKAAVgAvAmdQCmUVAbl62DiQjJNvg8fiCN/e3d7d3T7YBIAL2r3tAF1+tRU0GgG3b5/dzpdTu9fM6TdMWvMaEEEIItZHneZ7ntVEUeVEUXUzL6Ejvoh0Oh0oZDoct3DbLBFUJyUAcj1s1kyQBlsvl/X4RP0szSwgBg+j3+91YeSwB3Mx5FXs7CpBbHLZZJpsqAsA4jps50zSl6gaz2azLIUkewRdyd/jdit2QiD9J76vrdDrxSad6B4PBfVhZlkhgLGF/B6u57XYvovoNYKEmwwCWZYz0MBp1V7LZbMBGugJZloWYTCa3NrlYLDqe+Xz+2wNMp1PQavX0n3f7AGHSqDCS8xdMAAAAAElFTkSuQmCC',
         show_preview: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASBAMAAAHT56PyAAAAAXNSR0IArs4c6QAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABVQTFRFAAAAMzMzZmZmmZmZzMzM7u7u////GHb4AAAAAFxJREFUCFutirENwgAQxLxCGgb4InWkX+FFTXOpL0Bu/xEowghpLMsyMW9zvgiFMOY7JgGoYgaJJDHHkphPd2+c2uN/vwhglkdiqmo13d1mZp5G2mMk6fqTJHfbD7vKOqrMBxubAAAAAElFTkSuQmCC',
+        // Map pin icon derived from http://www.easyicon.net/language.en/1147919-map_icon.html
+        show_map: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAGLwHZKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABNUlEQVQoz23RsWtTURgF8N9L4muqiEg6WBAV6ihOWToLurq2U7Fr/gKRTh2K4KJb6eri5CKCFLoVcXBysENBoSB0MQQh2rzn5/DubaLm3OVyvsM557sXbtAGNbyXceIntAqc+mBsrRmEUdZcp9AxsKJPx7GO/UYTWfMsXxbVhs5UmSiFrhDuCGVDPlQJISxnXaEvhEvkrlx1TeXsvK63wrGwpWiIJaHniGmXW4beCY8bqoORKwYuuG0GE7VQ+XYeZ0MlVO5OVYVfwpecl7cMc7Dgia9psY/W/x0X2PbbDwMXdfXsCrV7iql96aYwdtnL5PTIanrqklaS1ejq2/Mdn712n+YzM1rayWPslacOhErYNLVJkZ9MUlhzXqS2M2jjMI0r4bm5KLCTZA9m9/ofK97o/k39Ad6gbZu23H5+AAAAAElFTkSuQmCC',
+        grip: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAlklEQVQ4y51RwREEIQhLrAwqx85yn3UHXfVG81EIiYBARkQIIzQveS76VEgSc1BrBXMAAMwBABALdBYzAgDcHSUTEaFaK9z9FZQV8cyDfxB3ZEQsp1CzLyvSzKZ7eMm8rEyqTdXOLRkR4mi7sj+CJLVXeSok2f0Ab4VmBpJ7g52w5XgrnHZwIuw6uBHmJWpMuntXOMYZP6Jv1US6s0WlAAAAAElFTkSuQmCC',
     },
     locales = {
         'en-US': {
@@ -41,6 +45,7 @@ var images = {
                 bestof: "<a href='{link}' title='Should be considered for inclusion in the Best-Of-Craigslist'>best of craigslist</a>",
                 thanks: "Thanks for flagging.",
             },
+            togglemap: "Toggle map display",
             prefspane: {
                 link: "clpics",
                 title: "CLPics Preferences",
@@ -64,6 +69,8 @@ var images = {
                         limitimagestooltip: "Limits the number of images displayed for each listing; eg, when set to 2, each listing may show a maximum of 2 images, even if it has 4.",
                     domainlimit: "Show only craigslist.org images",
                         domainlimittooltip: "Don't display images hosted on external sites (for example, those used in many car sales listings).",
+
+                mappreview: "Show Map Previews",
 
                 textpreview: "Show Text Previews",
                     restrictpreviewheight: "Restrict preview height",
@@ -194,6 +201,7 @@ var prefs_panel = function() {/*
             <div>
                 <label><input type="checkbox" name="enable"> {enable}</label>
                 <label><input type="checkbox" name="image_preview"> {imagepreview}</label>
+                <label><input type="checkbox" name="map_preview"> {mappreview}</label>
             </div>
 
             <fieldset class="cont resize-options">
@@ -326,6 +334,7 @@ var prefs = {
         restrict_preview: false,
         preview_height: 300,
         load_when: "allatonce",
+        map_preview: true,
     },
     init: function() {
         this.load();
@@ -638,6 +647,49 @@ ImagesProcessor.prototype = {
 };
 
 
+function Map(lat, lon) {
+    this.lat = lat;
+    this.lon = lon;
+    this.id = Map.id++;
+
+    this.el = $('<div>', {id: 'clpics-map-' + this.id});
+}
+Map.id = 0;
+Map.prototype = {
+    init: function() {
+        // Mostly copied from <craigslist>/js/postings-concat.js
+        var latlng = new L.LatLng(this.lat, this.lon),
+            ZoomControl = L.Control.ZoomFS || L.Control.Zoom,
+            tiles;
+
+        L.Icon.Default.imagePath = '//www.craigslist.org/images/map';
+        tiles = new L.TileLayer(CL.maps.clMapsUrl, {
+            subdomains: "0123456789",
+            setView: true,
+            enableHighAccuracy: true,
+            prefix: ''
+        });
+        this.map = new L.Map('clpics-map-' + this.id, {
+            center: latlng,
+            zoom: 14,
+            zoomControl: false,
+            maxZoom: 17,
+            minZoom: 1,
+            maxBounds: [[-90, -180], [90, 180]],
+            layers: [tiles]
+        });
+        this.map.attributionControl.setPrefix('');
+        L.marker(latlng, {draggable: false}).addTo(this.map);
+
+        // add zoom controls to the desktop map
+        this.map.addControl(new ZoomControl());
+    },
+    update: function() {
+        this.map.invalidateSize({pan: false, animate: true});
+    }
+};
+
+
 function ListingProcessor(listing) {
     this.listing = listing.addClass('cl-processed');
     this.async_process();
@@ -692,6 +744,9 @@ ListingProcessor.prototype = {
             this.mark_flagged();
             return;
         }
+
+        if (prefs.map_preview && this.listing.find('.maptag').length)
+            this.add_map_preview(page);
 
         if (prefs.text_preview)
             this.add_text_preview(page);
@@ -840,6 +895,87 @@ ListingProcessor.prototype = {
 
         this.previews = new ImagesProcessor(container, this.images);
         this.previews.init();
+    },
+    add_map_preview: function(page) {
+        var proc = this;
+        $("<img>", {title: locale("togglemap"), src: images.show_map})
+            .css("margin-right", ".5em")
+            .click(function() {
+                if (!proc.map_container) {
+                    proc.create_map(page);
+                    proc.map_container.slideUp(0);
+                }
+                proc.map_container.slideToggle('slow');
+            })
+            .prependTo(this.listing);
+    },
+    create_map: function(page) {
+        var map = page.find('#map'),
+            lat = map.data('latitude'),
+            lon = map.data('longitude'),
+            address = page.find('.mapaddress'),
+            container = this.map_container = $('<div>').css({
+                padding: '.5em 0',
+                overflow: 'auto',
+            });
+
+        container.insertAfter(this.listing.find('.txt'));
+
+        map = new Map(lat, lon);
+        map.el
+            .appendTo(container)
+            .css({
+                width: '100%',
+                height: 125,
+            });
+        map.init();
+
+        address.appendTo(container);
+
+        var grip = (
+            $('<img>', {src: images.grip, draggable: false})
+                .appendTo(map.el)
+                .css({
+                    position: 'absolute',
+                    bottom: -1,
+                    right: -1,
+                    cursor: 'se-resize',
+                })
+                .on({
+                    mousedown: function(e) {
+                        if (e.button === 0) {
+                            $(this).data('dragging', true);
+                            map.map.dragging.disable();
+                        }
+                    },
+                })
+        );
+        $(document).on({
+            mousemove: function(e) {
+                if (!grip.data('dragging'))
+                    return;
+
+                var new_x = e.screenX,
+                    new_y = e.screenY,
+                    old_x = grip.data('x'),
+                    old_y = grip.data('y'),
+                    delta_x = new_x - old_x,
+                    delta_y = new_y - old_y;
+                if (old_x && old_y) {
+                    map.el.width(map.el.width() + delta_x);
+                    map.el.height(map.el.height() + delta_y);
+                    map.update();
+                }
+                grip.data({
+                    x: new_x,
+                    y: new_y,
+                });
+            },
+            mouseup: function() {
+                grip.data('dragging', false);
+                map.map.dragging.enable();
+            }
+        });
     }
 };
 
