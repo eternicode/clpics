@@ -79,6 +79,8 @@ var images = {
 
                 willtakeeffect: "Changes will take effect next time you load a listings page",
                 clear: "&times; Reset settings",
+                'import': "Import settings",
+                save: "Save",
             },
         },
     };
@@ -159,6 +161,13 @@ var prefs_panel = function() {/*
         }
         #clpprefs button {
             float: right;
+        }
+        #clpprefs #import-options {
+            clear: both;
+        }
+        #clpprefs #import-options textarea {
+            width: 100%;
+            height: 5em;
         }
     </style>
     <form>
@@ -287,7 +296,13 @@ var prefs_panel = function() {/*
                 </label>
             </fieldset>
             <small>{willtakeeffect}</small>
+            <button class="import">{import}</button>
             <button class="clear">{clear}</button>
+            <fieldset id="import-options">
+                <legend>{import}</legend>
+                <textarea></textarea>
+                <button>{save}</button>
+            </fieldset>
         </fieldset>
     </form>
 </blockquote>
@@ -409,6 +424,41 @@ var prefs = {
         pane.find('button.clear').click(function() {
             prefs.clear();
             prefs.populate_fields();
+            return false;
+        });
+
+        pane.find('#import-options').slideUp(0);
+        pane.find('button.import').click(function() {
+            pane.find('#import-options').slideToggle('slow');
+            return false;
+        });
+        pane.find('#import-options button').click(function() {
+            var input = $.trim(pane.find('#import-options textarea').val()).split(/\r?\n/),
+                settings = {},
+                x;
+            for (var i=0; i<input.length; i++) {
+                x = input[i].split(' ');
+                settings[x[0]] = x[1];
+            }
+            $.each(prefs.defaults, function(key, def) {
+                if (!(key in settings))
+                    return;
+
+                var val = settings[key];
+                switch (typeof def) {
+                    case 'string':
+                        prefs.set(key, val);
+                        break;
+                    case 'boolean':
+                        prefs.set(key, val === 'true');
+                        break;
+                    case 'number':
+                        prefs.set(key, parseFloat(val));
+                        break;
+                }
+            });
+            pane.find('#import-options').slideUp('slow');
+            // document.location.reload();
             return false;
         });
     },
