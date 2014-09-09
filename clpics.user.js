@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name        CLPics
+// @version     0.8.7
 // @author      Andrew Rowls <andrew@eternicode.com>
 // @icon        data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAAAAAEhFhW+AAAAAXNSR0IArs4c6QAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAcBJREFUOMuFkbFO60AQAOcpOhc2f0Ad6aKEgBRZub0oH0JDQ5W/Mg11+AoULJGGxlh7kfIKQCGp6fwKY2JI0JtqNR6t72wwxmAywASAPM/pGAOiQ0Vu+0qZ5xWdmYiI7DCiXQTFiHVIolDVQGSMMRGEVESkLygrOwdBuUi0Hk6HoR58bKcIj4s8z/P7lKJeM4Ys6BdBLZGm7CkFo0K4/JiyngBaC/2c9+Kt8uhuM0CFKPRbOwoPD1WbEfTS0Z5xzOeFjDHGRB3AavtgGciuLw3pLICUrZekCqJYXWUM54DUQl6vtkzWLfHMGaIt0cyN8E8nd/hiL1y1WeOqMG9E7LwldpMhotRpQz9AWt3nDYvyEUbfbv8A42+igHjc+hxpD4itEy9H8OJsDDitdkWpB5TFrlIHkQ9F+ze0D1kED0ZUBWLrvHc2hmQwSOqgfvIZOK3eNtXaw/T9fXok8OHp9OT2btjog0BUJ219JHi+oHuWgGiZHgvC6+XVx3YKEnazgQyTH4HNdLXSzILNNPzdzgdNEO1X/iQtVaDjipfr7vnogPPu9UvhgNGi+pXFCEiXvwfLFOjdFMv8KMvipsf/+PMPAX2RA5BR3zYAAAAASUVORK5CYII=
 // @namespace   http://github.com/eternicode/clpics
