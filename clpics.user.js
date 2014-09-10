@@ -10,8 +10,12 @@
 // @noframes
 // @run-at      document-end
 // @match       https://*.craigslist.org/*
+// @match       http://*.craigslist.org/*
+// @match       https://*.craigslist.ca/*
 // @match       http://*.craigslist.ca/*
 // @exclude     https://*.craigslist.org/static/localstorage.html*
+// @exclude     http://*.craigslist.org/static/localstorage.html*
+// @exclude     https://*.craigslist.ca/static/localstorage.html*
 // @exclude     http://*.craigslist.ca/static/localstorage.html*
 // @require     https://www.craigslist.org/js/general-concat.min.js?v=8a1701132ee120b06085b460053658a6
 // @require     https://www.craigslist.org/js/leaflet-concat.min.js?v=1218ae639adbe8ffc16f31004007113d
