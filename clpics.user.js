@@ -342,7 +342,6 @@ var prefs = {
     },
     init: function() {
         this.load();
-        this.setup_panel();
     },
     setup_panel: function() {
         var pane = prefs.pane = $($.trim(interpolate(prefs_panel, get_locale().prefspane)))
@@ -985,12 +984,12 @@ ListingProcessor.prototype = {
 
 
 var clpics = {
-    should_run: function() {
+    may_run: function() {
         // craigslist has kindly given us unique body classes to work with
         //  hp - homepage
         //  toc - listings, both search and category
         //  posting - an ad
-        return prefs.enable && $('body').hasClass('toc');
+        return $('body').hasClass('toc');
     },
     each_listing: (function() {
         var container = $('.content');
@@ -1041,7 +1040,11 @@ var clpics = {
 };
 
 prefs.init();
-if (clpics.should_run())
-    clpics.init();
+if (clpics.may_run()) {
+    prefs.setup_panel();
+    if (prefs.enable) {
+        clpics.init();
+    }
+}
 
 }());
