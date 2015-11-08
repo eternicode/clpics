@@ -142,12 +142,22 @@ var prefs_panel = function() {/*
 
 <blockquote class="searchform" id="clpprefs">
     <style>
+        #clpprefs {
+            position: fixed;
+            z-index: 1001;
+            top: 6em;
+            left: 10%;
+            width: 80%;
+        }
         #clpprefs .loadmethod {
             float: right;
         }
         #clpprefs label {
             font-size: .8em;
             vertical-align: middle;
+        }
+        #clpprefs form > fieldset {
+            box-shadow: 0 0 15px #ccc;
         }
         #clpprefs fieldset {
             vertical-align: top;
@@ -169,6 +179,8 @@ var prefs_panel = function() {/*
         }
         #clpprefs small {
             font-size: .6em;
+            float: left;
+            margin-top: 1em;
         }
         #clpprefs button {
             float: right;
@@ -345,17 +357,17 @@ var prefs = {
     },
     setup_panel: function() {
         var pane = prefs.pane = $($.trim(interpolate(prefs_panel, get_locale().prefspane)))
-            .insertAfter('header.bchead')
-            .slideUp(0);
+            .insertAfter('header.global-header')
+            .fadeOut(0);
 
         $(
-            '<li class="user clpics"><em>[ </em><a href="#">' +
+            '<li class="user clpics"><span>[ </span><a href="#">' +
             locale('prefspane.link') +
-             '</a><em> ]</em></li>'
+             '</a><span> ]</span></li>'
         )
             .insertAfter('header .userlinks .user.account')
             .click(function() {
-                pane.slideToggle('slow');
+                pane.fadeToggle('slow');
                 return false;
             });
 
