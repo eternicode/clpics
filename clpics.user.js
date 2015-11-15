@@ -998,10 +998,10 @@ ListingProcessor.prototype = {
 var clpics = {
     may_run: function() {
         // craigslist has kindly given us unique body classes to work with
-        //  hp - homepage
-        //  toc - listings, both search and category
+        //  homepage - homepage
+        //  list - listings, both search and category
         //  posting - an ad
-        return $('body').hasClass('toc');
+        return $('body').hasClass('list');
     },
     each_listing: (function() {
         var container = $('.content');
