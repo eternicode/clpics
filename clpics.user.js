@@ -17,8 +17,6 @@
 // @exclude     http://*.craigslist.org/static/localstorage.html*
 // @exclude     https://*.craigslist.ca/static/localstorage.html*
 // @exclude     http://*.craigslist.ca/static/localstorage.html*
-// @require     https://www.craigslist.org/js/general-concat.min.js?v=8a1701132ee120b06085b460053658a6
-// @require     https://www.craigslist.org/js/leaflet-concat.min.js?v=1218ae639adbe8ffc16f31004007113d
 
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -191,6 +189,11 @@ var prefs_panel = function() {/*
         #clpprefs #import-options textarea {
             width: 100%;
             height: 5em;
+        }
+
+        .search.list .row.cl-processed {
+            max-height: none;
+            overflow: visible;
         }
     </style>
     <form>
@@ -1006,7 +1009,7 @@ var clpics = {
     each_listing: (function() {
         var container = $('.content');
         return function(callback) {
-            return container.find('> p:not(.cl-processed)').each(callback);
+            return container.find('.rows > p:not(.cl-processed)').each(callback);
         };
     }()),
     init: function() {
