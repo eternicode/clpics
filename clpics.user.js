@@ -1016,7 +1016,7 @@ var clpics = {
     each_listing: (function() {
         var container = $('.content');
         return function(callback) {
-            return container.find('.rows > p:not(.cl-processed)').each(callback);
+            return container.find('.row:not(.cl-processed)').each(callback);
         };
     }()),
     init: function() {
