@@ -149,9 +149,9 @@ var prefs_panel = function() {/*
     <style>
         #clpprefs {
             position: fixed;
-            z-index: 1001;
-            top: 6em;
-            left: 10%;
+            z-index: 1010;
+            top: 3em;
+            left: 15%;
             width: 80%;
         }
         #clpprefs .loadmethod {
@@ -198,7 +198,7 @@ var prefs_panel = function() {/*
             height: 5em;
         }
 
-        .search.list .row.cl-processed {
+        .search.list .result-row {
             max-height: none;
             overflow: visible;
         }
@@ -789,7 +789,7 @@ ListingProcessor.prototype = {
         // Text-only (no HTML) parsing, to avoid loading extra images (eg,
         // unused thumbnails)
 
-        var pics = this.listing.find("span.p:first");
+        var pics = this.listing.find("span.result-tags:first");
         // If no <span>, or doesn't contain "pic" or "img", skip
         if (!pics.length || !pics.is(":contains(pic), :contains(img)"))
             return [];
@@ -944,7 +944,7 @@ ListingProcessor.prototype = {
                 overflow: 'auto',
             });
 
-        container.insertAfter(this.listing.find('.txt'));
+        container.insertAfter(this.listing.find('.result-meta'));
 
         map = new Map(lat, lon);
         map.el
@@ -1016,7 +1016,7 @@ var clpics = {
     each_listing: (function() {
         var container = $('.content');
         return function(callback) {
-            return container.find('.row:not(.cl-processed)').each(callback);
+            return container.find('.result-info:not(.cl-processed)').each(callback);
         };
     }()),
     init: function() {
