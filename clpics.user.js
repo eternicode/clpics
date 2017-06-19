@@ -367,7 +367,7 @@ var prefs = {
     },
     setup_panel: function() {
         var pane = prefs.pane = $($.trim(interpolate(prefs_panel, get_locale().prefspane)))
-            .insertAfter('header.global-header')
+            .insertBefore('form#searchform')
             .fadeOut(0);
 
         $(
